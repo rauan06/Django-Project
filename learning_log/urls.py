@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, re_path
 
+app_name = "learning_logs"
 
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
