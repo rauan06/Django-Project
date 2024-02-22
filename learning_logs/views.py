@@ -65,7 +65,7 @@ def new_entry(request, topic_id):
 
 def edit_entry(request, entry_id):
     """Edit an entry"""
-    entry = Entry(id = entry_id)
+    entry = Entry.objects.get(id = entry_id)
     topic = entry.topic
 
     if request.method != 'POST':
@@ -79,5 +79,5 @@ def edit_entry(request, entry_id):
             return HttpResponseRedirect(reverse('learning_logs:topic',
                                                 args=[topic.id]))
         
-    context = {'form' : form}
+    context = {'topic' : topic, 'form' : form, 'entry_id' : entry_id}
     return render(request, 'learning_logs/edit_entry.html', context)
