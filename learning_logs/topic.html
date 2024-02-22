@@ -1,4 +1,5 @@
 {% extends 'learning_logs/base.html' %}
+
 {% block content %}
 <p>Topic: {{ topic }}</p>
 <p>Entries:</p>
@@ -14,4 +15,7 @@
    </li>
    {% endfor %}
 </ul>
+<p>
+   <a href="{% url 'learning_logs:new_entry' topic.id %}">Add a new Entry</a>
+</p>
 {% endblock content %}  
