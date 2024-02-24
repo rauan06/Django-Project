@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
@@ -15,19 +15,25 @@ def index(request):
 @login_required
 def topics(request):
     """Show all topics"""
-    topics = Topic.objects.all()
+    topics = Topic.objects.filter(owner=request.user).order_by('date_added')
     context = {'topics' : topics}
     return render(request, 'learning_logs/topics.html', context)
 
 
+@login_required
 def topic(request, topic_id):
     """Show all Topics and Entries"""
-    topics = Topic.objects.get(id = topic_id)
-    entries = topics.entry_set.order_by('-date_added')
-    context = {'topic': topics, 'entries': entries}
+    topic = Topic.objects.get(id = topic_id)
+    # Make sure the topic belongs to the current user.
+    if topic.owner != request.user:
+        raise Http404
+    entries = topic.entry_set.order_by('-date_added')
+    context = {'topic': topic, 'entries': entries}
     return render(request, 'learning_logs/topic.html', context)
 
 
+
+@login_required
 def new_topic(request):
     """Add a new Topic"""
     if request.method != 'POST':
@@ -37,16 +43,22 @@ def new_topic(request):
         """POST data submitted, proceed data"""
         form = TopicForm(request.POST)
         if form.is_valid():
-            form.save()
+            new_topic = form.save(commit=False)
+            new_topic.owner = request.user
+            new_topic.save()
             return HttpResponseRedirect(reverse('learning_logs:topics'))
     
     context = {'form' : form}
     return render(request, 'learning_logs/new_topic.html', context)
 
 
+@login_required
 def new_entry(request, topic_id):
     """Add a new entry"""
     topic = Topic.objects.get(id = topic_id)
+    # Make sure the topic belongs to the current user.
+    if topic.owner != request.user:
+        raise Http404
 
     if request.method != 'POST':
         """No entry was submitted, enter blank form"""
@@ -65,10 +77,15 @@ def new_entry(request, topic_id):
     return render(request, 'learning_logs/new_entry.html', context)
 
 
+@login_required
 def edit_entry(request, entry_id):
     """Edit an entry"""
     entry = Entry.objects.get(id = entry_id)
     topic = entry.topic
+
+    # Make sure the topic belongs to the current user.
+    if topic.owner != request.user:
+        raise Http404
 
     if request.method != 'POST':
         """No data was recieved, return blank form"""
@@ -85,6 +102,7 @@ def edit_entry(request, entry_id):
     return render(request, 'learning_logs/edit_entry.html', context)
 
 
+@login_required
 def delete_topic(request, topic_id):
     """Deletes the topic"""
     topic = Topic.objects.get(id = topic_id)
