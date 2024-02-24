@@ -22,4 +22,5 @@ app_name = "learning_logs"
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'', include('learning_logs.urls', namespace='learning_logs')),
+    re_path(r'^users/', include('users.urls', namespace = 'users')),
 ]
