@@ -17,6 +17,7 @@
    {% endfor %}
 </ul>
 <p>
-   <a href="{% url 'learning_logs:new_entry' topic.id %}">Add a new Entry</a>
+   <td><a href="{% url 'learning_logs:new_entry' topic.id %}">Add a new Entry</a></td>
+   <td><a href="{% url 'learning_logs:delete_topic' topic.id %}">Delete Entry</a></td>
 </p>
 {% endblock content %}  

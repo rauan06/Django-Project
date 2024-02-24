@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
@@ -11,6 +12,7 @@ def index(request):
     return render(request, 'learning_logs/index.html')
 
 
+@login_required
 def topics(request):
     """Show all topics"""
     topics = Topic.objects.all()
@@ -81,3 +83,11 @@ def edit_entry(request, entry_id):
         
     context = {'topic' : topic, 'form' : form, 'entry_id' : entry_id}
     return render(request, 'learning_logs/edit_entry.html', context)
+
+
+def delete_topic(request, topic_id):
+    """Deletes the topic"""
+    topic = Topic.objects.get(id = topic_id)
+    topic.delete()
+    return HttpResponseRedirect(reverse('learning_logs:topics'))
+
