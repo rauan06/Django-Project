@@ -7,6 +7,7 @@
 {% block content %}
    <p>
       <td><a href="{% url 'learning_logs:new_entry' topic.id %}">Add a new Entry</a></td>
+      |
       <td><a href="{% url 'learning_logs:delete_topic' topic.id %}">Delete Entry</a></td>
    </p>
 
@@ -19,6 +20,7 @@
                <td>
                   <a href="{% url 'learning_logs:edit_entry' entry.id %}">Edit entry</a>
                </td>
+               |
                <td>
                   <a href="{% url 'learning_logs:delete_entry' entry.id %}">Delete entry</a>
                </td>
