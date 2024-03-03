@@ -17,5 +17,3 @@ sqlparse==0.4.4
 static3==0.7.0
 typing_extensions==4.9.0
 tzdata==2024.1
-uvicorn==0.27.1
-whitenoise==6.6.0
